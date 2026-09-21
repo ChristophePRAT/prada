@@ -8,7 +8,7 @@ from src.features_extraction.features_extractors import create_features_extracto
 from src.features_extraction.features_processors import create_features_processor, FeaturesProcessor
 from src.features_extraction.features_transforms import create_features_transform
 from src.features_extraction.models import SupportedModels
-from src.protein_datasets import Protein, read_proteins_dataset, subsample_pre_train, train_test_split
+from src.protein_datasets import Protein, read_proteins_dataset, subsample_train, train_test_split
 from src.scoring import analyze_scores, scores_dataset
 from src.scoring.scorers import create_scorer, Scorer
 from src.utils import file_utils, python_utils, random_utils, torch_utils
