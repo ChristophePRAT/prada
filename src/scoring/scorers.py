@@ -37,7 +37,6 @@ class Scorer2(abc.ABC):
     def __init__(self) -> None:
         self._is_fitted: bool = False
 
-    @abc.abstractmethod
     def fit(self, features: List[torch.Tensor]) -> None:
         """
         Fits the scorer to the features.
@@ -92,7 +91,7 @@ class Scorer2(abc.ABC):
         return f"{self.__class__.__qualname__}()"
 
 
-class KNNScorer(Scorer):
+class KNNScorer(Scorer2):
     def __init__(self, device: torch.device, num_neighbors: int) -> None:
         super().__init__()
         self._device: torch.device = device
@@ -130,13 +129,13 @@ class KNNScorer(Scorer):
         return f"{self.__class__.__qualname__}(device={self._device}, num_neighbors={self._num_neighbors})"
 
 
-class NormSizeScorer(Scorer):
+class NormSizeScorer(Scorer2):
     def _score(self, data: torch.Tensor) -> torch.Tensor:
         scores = torch.linalg.norm(data, dim=self._CHANNELS_DIMENSION_INDEX)
         return scores
 
 
-def create_scorer(device: torch.device, knn_num_neighbors: int) -> Scorer:
+def create_scorer(device: torch.device, knn_num_neighbors: int) -> Scorer2:
     use_knn = knn_num_neighbors > 0
     if use_knn:
         return KNNScorer(device, knn_num_neighbors)

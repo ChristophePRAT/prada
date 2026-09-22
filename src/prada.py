@@ -8,9 +8,9 @@ from src.features_extraction.features_extractors import create_features_extracto
 from src.features_extraction.features_processors import create_features_processor, FeaturesProcessor
 from src.features_extraction.features_transforms import create_features_transform
 from src.features_extraction.models import SupportedModels
-from src.protein_datasets import Protein, read_proteins_dataset, subsample_pre_train, train_test_split
+from src.protein_datasets import Protein, read_proteins_dataset, subsample_train, train_test_split
 from src.scoring import analyze_scores, scores_dataset
-from src.scoring.scorers import create_scorer, Scorer
+from src.scoring.scorers import create_scorer, Scorer2
 from src.utils import file_utils, python_utils, random_utils, torch_utils
 from src.utils.scores_tracker import ScoresTracker
 
@@ -51,7 +51,7 @@ def run(model_to_use: SupportedModels, layers: Tuple[int, ...],
     print("DONE")
 
 
-def fit(features_extractor: FeaturesExtractor, features_processor: FeaturesProcessor, scorer: Scorer,
+def fit(features_extractor: FeaturesExtractor, features_processor: FeaturesProcessor, scorer: Scorer2,
         train_proteins: List[Protein], num_samples_evaluation: int, num_samples_evaluation_pretrain: int,
         no_subsampling: bool, random_seed: Optional[int]) -> None:
     if no_subsampling:
@@ -75,7 +75,7 @@ def fit(features_extractor: FeaturesExtractor, features_processor: FeaturesProce
 
 
 def fit_without_subsampling(features_extractor: FeaturesExtractor, features_processor: FeaturesProcessor,
-                            scorer: Scorer, train_proteins: List[Protein], num_samples_evaluation: int,
+                            scorer: Scorer2, train_proteins: List[Protein], num_samples_evaluation: int,
                             random_seed: Optional[int]) -> None:
     weight_function = python_utils.get_weight_function(features_processor.is_sequence_level())
     candidate_proteins = random_utils.sample_2d(train_proteins, num_samples_evaluation, weight_function, random_seed)
@@ -84,7 +84,7 @@ def fit_without_subsampling(features_extractor: FeaturesExtractor, features_proc
     scorer.fit(processed_features)
 
 
-def fit_with_subsampling(features_extractor: FeaturesExtractor, features_processor: FeaturesProcessor, scorer: Scorer,
+def fit_with_subsampling(features_extractor: FeaturesExtractor, features_processor: FeaturesProcessor, scorer: Scorer2,
                          pre_train_proteins: List[Protein], candidate_proteins: List[Protein],
                          num_samples_evaluation: int) -> None:
     pre_train_features = features_extractor.extract_batch(pre_train_proteins, treat_errors_silently=True)
@@ -105,7 +105,7 @@ def fit_with_subsampling(features_extractor: FeaturesExtractor, features_process
     scorer.fit(processed_best_candidates)
 
 
-def predict(features_extractor: FeaturesExtractor, features_processor: FeaturesProcessor, scorer: Scorer,
+def predict(features_extractor: FeaturesExtractor, features_processor: FeaturesProcessor, scorer: Scorer2,
             test_proteins: List[Protein], output_path: str) -> None:
     results_path = output_path + ".results"
     roc_auc_path = output_path + ".rocauc"

@@ -15,14 +15,14 @@ _DEFAULT_LAYERS: Tuple[int, ...] = (_DEFAULT_MODEL_TO_USE.number_of_layers - 1, 
 
 @dataclass(frozen=True)
 class RunConfig:
+    path_to_dataset: str = field(alias=["-dataset", "-ds"])
+    """ Path to the dataset. See 'src/protein_datasets.py' for information about the dataset's expected format. """
+
     model_to_use: SupportedModels = field(alias=["-model"], default=_DEFAULT_MODEL_TO_USE)
     """ The model to use. See 'src/features_extraction/models.py'. """
 
     layers: Tuple[int, ...] = field(alias=["-representation_layers", "-repr_layers"], default=_DEFAULT_LAYERS)
     """ The layers in the model to extract the representations from. """
-
-    path_to_dataset: str = field(alias=["-dataset", "-ds"])
-    """ Path to the dataset. See 'src/protein_datasets.py' for information about the dataset's expected format. """
 
     train_portion: float = field(alias=["-train_p"], default=0.5)
     """ Percentage of the normal proteins to use for training. Rest will be used for testing. """
@@ -58,31 +58,45 @@ class RunConfig:
     knn_num_neighbors: int = field(alias=["-knn", "-KNN", "-kNN"], default=2)
     """ Number of neighbors for kNN. """
 
-    output_path: str = field(alias=["-"], default="./results/")  # todo tomer
+    output_path: str = field(default="./results/")  # todo tomer
     """  """
 
     random_seed: Optional[int] = field(alias=["-seed"], default=None)
     """ For constant results between runs. """
 
-    no_subsampling: bool = field(alias=["-"], default=False)  # todo tomer
+    stride_increments: int = field(alias=["-stride"], default=1)
+    """ Stride increments for the spatial windowing of the features. """
+
+    num_samples_evaluation_pretrain: Optional[int] = field(alias=["-num_samples_pretrain", "-n_samples_pretrain"],
+                                                            default=None)
+    """ The amount of samples to use for evaluating the pre-train candidates in the features selection stage.
+    Defaults to 'num_samples_evaluation' if not set. """
+
+    no_subsampling: bool = field(default=False)  # todo tomer
     """  """
 
-    no_cuda: bool = field(alias=["-"], default=False)  # todo tomer
+    no_cuda: bool = field(default=False)  # todo tomer
     """ Do not use CUDA. """
 
     no_cuda_for_extract: bool = field(alias=["-extract_on_cpu"], default=False)
     """ Do not use CUDA for the initial features extraction stage. """
 
+    no_cuda_for_transform: bool = field(alias=["-transform_on_cpu"], default=False)
+    """ Do not use CUDA for the features transform stage. """
+
     no_cuda_for_scorer: bool = field(alias=["-score_on_cpu"], default=False)
     """ Do not use CUDA for the scoring stage. """
 
-    extract_device_index: Optional[int] = field(alias=["-"], default=None)
+    extract_device_index: Optional[int] = field(default=None)
     """  """  # todo tomer
 
-    scorer_device_index: Optional[int] = field(alias=["-"], default=None)
+    transform_device_index: Optional[int] = field(default=None)
     """  """  # todo tomer
 
-    is_quick_run: bool = field(alias=["-"], default=False)  # todo tomer remove
+    scorer_device_index: Optional[int] = field(default=None)
+    """  """  # todo tomer
+
+    is_quick_run: bool = field(default=False)  # todo tomer remove
     """ Should we subsample the train and . """
 
 

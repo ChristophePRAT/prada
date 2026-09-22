@@ -14,14 +14,14 @@ _DEFAULT_LAYERS: Tuple[int, ...] = (_DEFAULT_MODEL_TO_USE.number_of_layers - 1, 
 
 @dataclass(frozen=True)
 class RunConfig:
+    path_to_dataset: str = field(alias=["-dataset", "-ds"])
+    """ Path to the dataset. See 'src/protein_datasets.py' for information about the dataset's expected format. """
+
     model_to_use: SupportedModels = field(alias=["-model"], default=_DEFAULT_MODEL_TO_USE)
     """ The model to use. See 'src/features_extraction/models.py'. """
 
     layers: Tuple[int, ...] = field(alias=["-representation_layers", "-repr_layers"], default=_DEFAULT_LAYERS)
     """ The layers in the model to extract the representations from. """
-
-    path_to_dataset: str = field(alias=["-dataset", "-ds"])
-    """ Path to the dataset. See 'src/protein_datasets.py' for information about the dataset's expected format. """
 
     num_splits: int = field(default=5)
     """ The number of folds in a (Stratified)KFold. """
@@ -34,6 +34,9 @@ class RunConfig:
 
     solver: str = field(default="saga")
     """ Algorithm to use in the optimization problem. """
+
+    no_cuda: bool = field(default=False)
+    """  """
 
 
 def main() -> None:
