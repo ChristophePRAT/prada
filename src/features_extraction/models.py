@@ -6,7 +6,7 @@ import torch
 
 from src.utils.enum_utils import EnumWithAttrs
 
-_ESM_MODEL = Union[esm.model.ProteinBertModel, esm.model.MSATransformer]
+_ESM_MODEL = Union[esm.ProteinBertModel, esm.MSATransformer]
 _ESM_TOKENIZER = esm.Alphabet
 
 
